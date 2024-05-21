@@ -1,12 +1,12 @@
 [package]
-name = "aggregator-v1"
-version = "0.1.0"
+name = "drift"
+version = "2.81.0"
 description = "Created with Anchor"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "aggregator_v1"
+name = "drift"
 
 [features]
 default = []
@@ -17,6 +17,5 @@ no-log-ix-name = []
 idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
+anchor-gen = "0.3.1"
 anchor-lang = "0.30.0"
-bytemuck = { version = "1.4.0", features = ["derive", "min_const_generics"]}
-drift = { version = "2.81.0", path = "../drift", features = ["cpi"] }

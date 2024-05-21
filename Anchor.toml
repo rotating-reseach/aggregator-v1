@@ -6,6 +6,7 @@ skip-lint = false
 
 [programs.localnet]
 aggregator_v1 = "BPanLhvKwatyLQwSWTbUc3R3VVwsrQWrEeTtzD2DA6TZ"
+drift = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
 
 [registry]
 url = "https://api.apr.dev"
