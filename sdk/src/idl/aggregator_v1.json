@@ -62,20 +62,20 @@
       "args": []
     },
     {
-      "name": "initialize_aggregator_token",
+      "name": "initialize_aggregator_map",
       "discriminator": [
-        238,
-        60,
-        84,
-        237,
+        174,
+        3,
+        190,
+        14,
         57,
-        199,
-        155,
-        198
+        125,
+        26,
+        151
       ],
       "accounts": [
         {
-          "name": "aggregator_token",
+          "name": "aggregator_map",
           "writable": true
         },
         {

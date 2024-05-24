@@ -68,20 +68,20 @@ export type AggregatorV1 = {
       "args": []
     },
     {
-      "name": "initializeAggregatorToken",
+      "name": "initializeAggregatorMap",
       "discriminator": [
-        238,
-        60,
-        84,
-        237,
+        174,
+        3,
+        190,
+        14,
         57,
-        199,
-        155,
-        198
+        125,
+        26,
+        151
       ],
       "accounts": [
         {
-          "name": "aggregatorToken",
+          "name": "aggregatorMap",
           "writable": true
         },
         {

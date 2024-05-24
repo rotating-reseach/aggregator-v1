@@ -29,7 +29,7 @@ export class AggregatorClient {
         return PublicKey.findProgramAddressSync([Buffer.from("aggregator_group")], this.program.programId)[0];
     }
 
-    public getAggregatorTokenAddress(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey): PublicKey {
+    public getaggregatorMapAddress(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey): PublicKey {
         if (asset_type == VaultAssetType.DEPOSIT) {
             return PublicKey.findProgramAddressSync( [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([0])], this.program.programId)[0];
         } else if (asset_type == VaultAssetType.SPOT_BORROW) {
@@ -40,6 +40,11 @@ export class AggregatorClient {
             return PublicKey.findProgramAddressSync( [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([3])], this.program.programId)[0];
         }
     }
+
+    public async getVaultLookupTableAddress(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey): Promise<PublicKey> {
+        return (await this.program.account.aggregatorMap.fetch(this.getaggregatorMapAddress(asset_type, token_mint, lending_program))).vaultLut;
+    }
+
     
     
 }

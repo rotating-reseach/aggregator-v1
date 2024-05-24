@@ -31,7 +31,7 @@ describe("Initialize Aggregator Token", () => {
     });
 
     it("Initialize Aggregator Token for drift USDC deposit", async () => {
-        const tx = await adminClient.initializeAggregatorToken(VaultAssetType.DEPOSIT, USDC_MINT, DRIFT_PROGRAM_ID);
+        const tx = await adminClient.initializeAggregatorMap(VaultAssetType.DEPOSIT, USDC_MINT, DRIFT_PROGRAM_ID);
         console.log("   Initialize Aggregator Token:", tx);
         await getLogs(tx);
     });

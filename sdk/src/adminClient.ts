@@ -17,18 +17,18 @@ export class AdminAggregatorClient extends AggregatorClient {
         return txSig;
     }
 
-    public async buildInitializeAggregatorTokenTx(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey): Promise<TransactionInstruction> {
+    public async buildinitializeAggregatorMapTx(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey): Promise<TransactionInstruction> {
         const [_, vault_lookupTable] =
             AddressLookupTableProgram.createLookupTable({
-                authority: this.getAggregatorTokenAddress(asset_type, token_mint, lending_program),
+                authority: this.getaggregatorMapAddress(asset_type, token_mint, lending_program),
                 payer: this.wallet.publicKey,
                 recentSlot: await this.provider.connection.getSlot(),
             });
 
         let tx: TransactionInstruction;
         if (asset_type == VaultAssetType.DEPOSIT) {
-            tx = await this.program.methods.initializeAggregatorToken(VaultAssetType.DEPOSIT, new BN(await this.provider.connection.getSlot()) ).accounts({
-                aggregatorToken: this.getAggregatorTokenAddress(VaultAssetType.DEPOSIT, token_mint, lending_program),
+            tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.DEPOSIT, new BN(await this.provider.connection.getSlot()) ).accounts({
+                aggregatorMap: this.getaggregatorMapAddress(VaultAssetType.DEPOSIT, token_mint, lending_program),
                 authority: this.wallet.publicKey,
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
@@ -36,8 +36,8 @@ export class AdminAggregatorClient extends AggregatorClient {
                 addressLookupTableProgram: AddressLookupTableProgram.programId
             }).instruction();
         } else if (asset_type == VaultAssetType.SPOT_BORROW) {
-            tx = await this.program.methods.initializeAggregatorToken(VaultAssetType.SPOT_BORROW, new BN(await this.provider.connection.getSlot())).accounts({
-                aggregatorToken: this.getAggregatorTokenAddress(VaultAssetType.SPOT_BORROW, token_mint, lending_program),
+            tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.SPOT_BORROW, new BN(await this.provider.connection.getSlot())).accounts({
+                aggregatorMap: this.getaggregatorMapAddress(VaultAssetType.SPOT_BORROW, token_mint, lending_program),
                 authority: this.wallet.publicKey,
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
@@ -45,8 +45,8 @@ export class AdminAggregatorClient extends AggregatorClient {
                 addressLookupTableProgram: AddressLookupTableProgram.programId
             }).instruction();
         } else if (asset_type == VaultAssetType.PERPETIAL_LONG) {
-            tx = await this.program.methods.initializeAggregatorToken(VaultAssetType.PERPETIAL_LONG, new BN(await this.provider.connection.getSlot())).accounts({
-                aggregatorToken: this.getAggregatorTokenAddress(VaultAssetType.PERPETIAL_LONG, token_mint, lending_program),
+            tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.PERPETIAL_LONG, new BN(await this.provider.connection.getSlot())).accounts({
+                aggregatorMap: this.getaggregatorMapAddress(VaultAssetType.PERPETIAL_LONG, token_mint, lending_program),
                 authority: this.wallet.publicKey,
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
@@ -54,8 +54,8 @@ export class AdminAggregatorClient extends AggregatorClient {
                 addressLookupTableProgram: AddressLookupTableProgram.programId
             }).instruction();
         } else if (asset_type == VaultAssetType.PERPETIAL_SHORT) {
-            tx = await this.program.methods.initializeAggregatorToken(VaultAssetType.PERPETIAL_SHORT, new BN(await this.provider.connection.getSlot())).accounts({
-                aggregatorToken: this.getAggregatorTokenAddress(VaultAssetType.PERPETIAL_SHORT, token_mint, lending_program),
+            tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.PERPETIAL_SHORT, new BN(await this.provider.connection.getSlot())).accounts({
+                aggregatorMap: this.getaggregatorMapAddress(VaultAssetType.PERPETIAL_SHORT, token_mint, lending_program),
                 authority: this.wallet.publicKey,
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
@@ -66,8 +66,8 @@ export class AdminAggregatorClient extends AggregatorClient {
         return tx;
     }
 
-    public async initializeAggregatorToken(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey) {
-        const tx = await this.buildInitializeAggregatorTokenTx(asset_type, token_mint, lending_program);
+    public async initializeAggregatorMap(asset_type: VaultAssetType, token_mint: PublicKey, lending_program: PublicKey) {
+        const tx = await this.buildinitializeAggregatorMapTx(asset_type, token_mint, lending_program);
         const txSig = await this.provider.connection.sendTransaction(await this.v0_pack([tx]), this.opts);
         return txSig;
     }

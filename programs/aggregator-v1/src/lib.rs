@@ -17,11 +17,11 @@ pub mod aggregator_v1 {
         instructions::aggregator::handle_initialize_aggregator_group(ctx)
     }
 
-    pub fn initialize_aggregator_token<'info>(
-        ctx: Context<'_, '_, '_, 'info, InitializeAggregatorToken<'info>>,
+    pub fn initialize_aggregator_map<'info>(
+        ctx: Context<'_, '_, '_, 'info, InitializeAggregatorMap<'info>>,
         _token_type: VaultAssetType,
         recent_slot: u64
     ) -> Result<()> {
-        instructions::aggregator::handle_initialize_aggregator_token(ctx, _token_type, recent_slot)
+        instructions::aggregator::handle_initialize_aggregator_map(ctx, _token_type, recent_slot)
     }
 }
