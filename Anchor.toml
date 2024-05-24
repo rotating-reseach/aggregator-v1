@@ -16,4 +16,23 @@ cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+test = "./test-scripts/run-ts-mocha.sh"
+fulltest = "./test-scripts/run-all-test.sh"
+single = "./test-scripts/run-single-test.sh"
+lint = "yarn prettify:fix && cargo fmt"
+
+[[test.genesis]]
+address = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+program = "./validator/program/drift-v2.so"
+
+[[test.genesis]]
+address = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+program = "./validator/program/token-metadata.so"
+
+[[test.genesis]]
+address = "2vVPTgsNXh5GtpLBRxxc12BmbyTbgDq6nbmFBRZfzoHY"
+program = "./validator/program/token-faucet.so"
+
+[[test.genesis]]
+address = "FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH"
+program = "./validator/program/mock-pyth.so"

@@ -1,0 +1,267 @@
+{
+  "address": "BPanLhvKwatyLQwSWTbUc3R3VVwsrQWrEeTtzD2DA6TZ",
+  "metadata": {
+    "name": "aggregator_v1",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize_aggregator_group",
+      "discriminator": [
+        22,
+        172,
+        15,
+        12,
+        33,
+        30,
+        143,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "aggregator_group",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_aggregator_token",
+      "discriminator": [
+        238,
+        60,
+        84,
+        237,
+        57,
+        199,
+        155,
+        198
+      ],
+      "accounts": [
+        {
+          "name": "aggregator_token",
+          "writable": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "aggregator_group",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_lut",
+          "writable": true
+        },
+        {
+          "name": "lending_program"
+        },
+        {
+          "name": "address_lookup_table_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "_token_type",
+          "type": {
+            "defined": {
+              "name": "VaultAssetType"
+            }
+          }
+        },
+        {
+          "name": "recent_slot",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AggregatorGroup",
+      "discriminator": [
+        14,
+        207,
+        148,
+        253,
+        55,
+        225,
+        105,
+        240
+      ]
+    },
+    {
+      "name": "AggregatorMap",
+      "discriminator": [
+        254,
+        218,
+        137,
+        215,
+        208,
+        152,
+        183,
+        100
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "AggregatorGroup",
+      "docs": [
+        "This account is used to store the global configuration of the aggregator."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The authority of the aggregator group."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the group."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AggregatorMap",
+      "docs": [
+        "This account is used to store the number of vaults with specific SPL token mint for a protocol.",
+        "The account use token mint and protocol id as the seed to derive the account key."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault_num",
+            "docs": [
+              "The number of vaults with specific SPL token mint."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the map."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "vault_lut",
+            "docs": [
+              "Address lookup table for the vaults."
+            ],
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultAssetType",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Deposit"
+          },
+          {
+            "name": "SpotBorrow"
+          },
+          {
+            "name": "PerpLong"
+          },
+          {
+            "name": "PerpShort"
+          }
+        ]
+      }
+    }
+  ]
+}
