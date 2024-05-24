@@ -128,7 +128,8 @@ export type AggregatorV1 = {
           "name": "lendingProgram"
         },
         {
-          "name": "addressLookupTableProgram"
+          "name": "addressLookupTableProgram",
+          "address": "AddressLookupTab1e1111111111111111111111111"
         },
         {
           "name": "systemProgram",

@@ -33,7 +33,7 @@ export class AdminAggregatorClient extends AggregatorClient {
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
                 lendingProgram: lending_program,
-                addressLookupTableProgram: AddressLookupTableProgram.programId
+               
             }).instruction();
         } else if (asset_type == VaultAssetType.SPOT_BORROW) {
             tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.SPOT_BORROW, new BN(await this.provider.connection.getSlot())).accounts({
@@ -42,7 +42,7 @@ export class AdminAggregatorClient extends AggregatorClient {
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
                 lendingProgram: lending_program,
-                addressLookupTableProgram: AddressLookupTableProgram.programId
+               
             }).instruction();
         } else if (asset_type == VaultAssetType.PERPETIAL_LONG) {
             tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.PERPETIAL_LONG, new BN(await this.provider.connection.getSlot())).accounts({
@@ -51,7 +51,7 @@ export class AdminAggregatorClient extends AggregatorClient {
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
                 lendingProgram: lending_program,
-                addressLookupTableProgram: AddressLookupTableProgram.programId
+               
             }).instruction();
         } else if (asset_type == VaultAssetType.PERPETIAL_SHORT) {
             tx = await this.program.methods.initializeAggregatorMap(VaultAssetType.PERPETIAL_SHORT, new BN(await this.provider.connection.getSlot())).accounts({
@@ -60,7 +60,7 @@ export class AdminAggregatorClient extends AggregatorClient {
                 tokenMint: token_mint,
                 vaultLut: vault_lookupTable,
                 lendingProgram: lending_program,
-                addressLookupTableProgram: AddressLookupTableProgram.programId
+               
             }).instruction();
         }
         return tx;

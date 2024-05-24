@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
 use solana_program::address_lookup_table::instruction::{create_lookup_table_signed, extend_lookup_table};
-use crate::{cpi::{CreateLookupTableCPI, ExtendLookupTableCPI}, state::{AggregatorGroup, AggregatorMap, VaultAssetType}};
+use crate::{cpi::{CreateLookupTableCPI, ExtendLookupTableCPI}, state::{AggregatorGroup, AggregatorMap, VaultAssetType}, AddressLookupTable};
 
 pub fn handle_initialize_aggregator_map<'info>(
     ctx: Context<'_, '_, '_, 'info, InitializeAggregatorMap<'info>>,
@@ -58,12 +58,7 @@ pub struct InitializeAggregatorMap<'info> {
     #[account(executable)]
     /// CHECK: This program won't execute in this instuction, only used to derive the PDA
     pub lending_program: AccountInfo<'info>,
-    #[account(
-        executable,
-        constraint = solana_program::address_lookup_table::program::check_id(address_lookup_table_program.key),
-    )]
-    /// CHECK: Verify with constraint
-    pub address_lookup_table_program: AccountInfo<'info>,
+    pub address_lookup_table_program: Program<'info, AddressLookupTable>,
     pub system_program: Program<'info, System>,
 }
 

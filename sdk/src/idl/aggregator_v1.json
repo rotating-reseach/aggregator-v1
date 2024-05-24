@@ -122,7 +122,8 @@
           "name": "lending_program"
         },
         {
-          "name": "address_lookup_table_program"
+          "name": "address_lookup_table_program",
+          "address": "AddressLookupTab1e1111111111111111111111111"
         },
         {
           "name": "system_program",
