@@ -5,9 +5,10 @@ use crate::state::AggregatorGroup;
 pub fn handle_initialize_aggregator_group(
     ctx: Context<InitializeAggregatorGroup>,
 ) -> Result<()> {
-    let aggregator_group = &mut ctx.accounts.aggregator_group.load_init()?;
+    let mut aggregator_group = ctx.accounts.aggregator_group.load_init()?;
     aggregator_group.authority = *ctx.accounts.authority.key;
     aggregator_group.bump = ctx.bumps.aggregator_group;
+    drop(aggregator_group);
     Ok(())
 }
 
