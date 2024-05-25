@@ -1,19 +1,25 @@
+use crate::{
+    cpi::{CreateLookupTableCPI, ExtendLookupTableCPI},
+    state::{AggregatorGroup, AggregatorMap, VaultAssetType},
+    AddressLookupTable,
+};
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
-use solana_program::address_lookup_table::instruction::{create_lookup_table_signed, extend_lookup_table};
-use crate::{cpi::{CreateLookupTableCPI, ExtendLookupTableCPI}, state::{AggregatorGroup, AggregatorMap, VaultAssetType}, AddressLookupTable};
+use solana_program::address_lookup_table::instruction::{
+    create_lookup_table_signed, extend_lookup_table,
+};
 
 pub fn handle_initialize_aggregator_map<'info>(
     ctx: Context<'_, '_, '_, 'info, InitializeAggregatorMap<'info>>,
     asset_type: VaultAssetType,
-    recent_slot: u64
+    recent_slot: u64,
 ) -> Result<()> {
     let mut aggregator_map = ctx.accounts.aggregator_map.load_init()?;
     aggregator_map.vault_num = 0;
     aggregator_map.bump = ctx.bumps.aggregator_map;
     aggregator_map.vault_lut = *ctx.accounts.vault_lut.key;
     drop(aggregator_map);
-    
+
     ctx.create_lookup_table(asset_type, recent_slot)?;
     let new_address = vec![
         ctx.accounts.aggregator_map.key(),
@@ -66,12 +72,18 @@ impl<'info> CreateLookupTableCPI for Context<'_, '_, '_, 'info, InitializeAggreg
     fn create_lookup_table(&self, asset_type: VaultAssetType, recent_slot: u64) -> Result<()> {
         let token_mint_pk = self.accounts.token_mint.key();
         let lending_program_pk = self.accounts.lending_program.key();
-        let signer_seeds: &[&[&[u8]]] = &[&[token_mint_pk.as_ref(), lending_program_pk.as_ref(), &[asset_type as u8], &[self.bumps.aggregator_map]]];
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            token_mint_pk.as_ref(),
+            lending_program_pk.as_ref(),
+            &[asset_type as u8],
+            &[self.bumps.aggregator_map],
+        ]];
         let (cpi_instruction, lut_key) = create_lookup_table_signed(
             self.accounts.aggregator_map.key(),
             self.accounts.authority.key(),
-            recent_slot);
-        
+            recent_slot,
+        );
+
         require_keys_eq!(self.accounts.vault_lut.key(), lut_key);
 
         solana_program::program::invoke_signed(
@@ -89,10 +101,19 @@ impl<'info> CreateLookupTableCPI for Context<'_, '_, '_, 'info, InitializeAggreg
 }
 
 impl<'info> ExtendLookupTableCPI for Context<'_, '_, '_, 'info, InitializeAggregatorMap<'info>> {
-    fn extend_lookup_table(&self, asset_type: VaultAssetType, new_address: Vec<Pubkey>) -> Result<()> {
+    fn extend_lookup_table(
+        &self,
+        asset_type: VaultAssetType,
+        new_address: Vec<Pubkey>,
+    ) -> Result<()> {
         let token_mint_pk = self.accounts.token_mint.key();
         let lending_program_pk = self.accounts.lending_program.key();
-        let signer_seeds: &[&[&[u8]]] = &[&[token_mint_pk.as_ref(), lending_program_pk.as_ref(),  &[asset_type as u8] , &[self.bumps.aggregator_map]]];
+        let signer_seeds: &[&[&[u8]]] = &[&[
+            token_mint_pk.as_ref(),
+            lending_program_pk.as_ref(),
+            &[asset_type as u8],
+            &[self.bumps.aggregator_map],
+        ]];
         let cpi_instruction = extend_lookup_table(
             self.accounts.vault_lut.key(),
             self.accounts.aggregator_map.key(),

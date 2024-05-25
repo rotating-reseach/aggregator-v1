@@ -19,7 +19,7 @@ wallet = "~/.config/solana/id.json"
 test = "./test-scripts/run-ts-mocha.sh"
 fulltest = "./test-scripts/run-all-test.sh"
 single = "./test-scripts/run-single-test.sh"
-lint = "yarn prettify:fix && cargo fmt"
+lint = "yarn prettier . --write && cargo fmt"
 
 [[test.genesis]]
 address = "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"

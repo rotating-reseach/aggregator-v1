@@ -4,9 +4,10 @@ import { ConfirmOptions, PublicKey } from "@solana/web3.js";
 import { AggregatorV1 } from "./types/aggregator_v1";
 
 export type AggregatorClientConfig = {
-    wallet: NodeWallet;
-    provider: AnchorProvider;
-    program?: Program<AggregatorV1>;
-    programId?: PublicKey;
-    opts?: ConfirmOptions;
+  wallet: NodeWallet;
+  provider: AnchorProvider;
+  program?: Program<AggregatorV1>;
+  programId?: PublicKey;
+  driftProgramId?: PublicKey;
+  opts?: ConfirmOptions;
 };
