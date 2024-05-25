@@ -3,7 +3,6 @@ import { confirmTransaction } from "@solana-developers/helpers";
 import { AdminAggregatorClient } from "../../sdk/src/adminClient";
 import { VaultAssetType } from "../../sdk/src/type";
 import { createToken, getLogs } from "../helper";
-import { AddressLookupTableProgram } from "@solana/web3.js";
 import { DRIFT_PROGRAM_ID, USDC_MINT } from "../constants";
 
 describe("Initialize Aggregator Token", () => {
