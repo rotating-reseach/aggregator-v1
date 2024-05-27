@@ -7,6 +7,7 @@ declare_id!("BPanLhvKwatyLQwSWTbUc3R3VVwsrQWrEeTtzD2DA6TZ");
 mod cpi;
 mod instructions;
 mod state;
+mod validation;
 
 #[program]
 pub mod aggregator_v1 {

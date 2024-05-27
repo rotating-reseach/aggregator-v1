@@ -1,6 +1,7 @@
 use crate::{
     cpi::{CreateLookupTableCPI, ExtendLookupTableCPI},
     state::{AggregatorGroup, AggregatorMap, VaultAssetType},
+    validation::check_lending_program,
     AddressLookupTable,
 };
 use anchor_lang::prelude::*;
@@ -61,7 +62,10 @@ pub struct InitializeAggregatorMap<'info> {
     /// CHECK: Check by address lookup table CPI
     pub vault_lut: AccountInfo<'info>,
 
-    #[account(executable)]
+    #[account(
+        executable,
+        constraint = check_lending_program(lending_program.key())?,
+    )]
     /// CHECK: This program won't execute in this instuction, only used to derive the PDA
     pub lending_program: AccountInfo<'info>,
     pub address_lookup_table_program: Program<'info, AddressLookupTable>,
