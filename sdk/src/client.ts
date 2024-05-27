@@ -4,7 +4,11 @@ import { AggregatorV1 } from "./types/aggregator_v1";
 import {
   AddressLookupTableAccount,
   ConfirmOptions,
+  Keypair,
   PublicKey,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
 } from "@solana/web3.js";
 import { AggregatorClientConfig } from "./config";
 import idl from "./idl/aggregator_v1.json";
@@ -77,4 +81,58 @@ export class AggregatorClient {
       )
     ).value;
   }
+
+  async getInitializeUserIx(): Promise<TransactionInstruction> {
+    return (await this.program.methods.initializeUser().accounts({
+      authority: this.wallet.publicKey,
+    }).instruction())
+  }
+
+  async initializeUser(): Promise<string> {
+    const ix = await this.getInitializeUserIx();
+    const tx = await this.provider.connection.sendTransaction(await this.v0_pack([ix]), this.opts);
+    return tx;
+  }
+
+  async v0_pack(
+    instructions: TransactionInstruction[],
+    programLookupTable?: boolean,
+    lookupTable?: PublicKey[] | AddressLookupTableAccount[],
+    signer?: Keypair,
+  ) {
+    let lookupTableAccount: AddressLookupTableAccount[] = [];
+    if (lookupTable instanceof PublicKey) {
+      for (let i = 0; i < lookupTable.length; i++) {
+        const lut = (
+          await this.provider.connection.getAddressLookupTable(
+            lookupTable[i] as PublicKey
+          )
+        ).value;
+        lookupTableAccount.push(lut);
+      }
+    } else if (lookupTable instanceof AddressLookupTableAccount) {
+      lookupTableAccount = lookupTable as AddressLookupTableAccount[];
+    }
+
+    if (programLookupTable) {
+      lookupTableAccount.push(await this.getAggregatorProgramLUT());
+    }
+
+    const blockhash = await this.provider.connection
+      .getLatestBlockhash()
+      .then((res) => res.blockhash);
+
+    const messageV0 = new TransactionMessage({
+      payerKey: this.wallet.publicKey,
+      recentBlockhash: blockhash,
+      instructions,
+    }).compileToV0Message(lookupTableAccount);
+
+    const transaction = new VersionedTransaction(messageV0);
+    transaction.sign([this.wallet.payer]);
+    if (signer) transaction.sign([signer]);
+
+    return transaction;
+  }
 }
+

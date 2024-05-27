@@ -8,6 +8,7 @@ test_files=(
     aggregator/initialize-group.ts
     aggregator/initialize-map.ts
     drift/initialize-vault.ts
+    user/initialize-user.ts
 )
 
 for test_file in ${test_files[@]}; do

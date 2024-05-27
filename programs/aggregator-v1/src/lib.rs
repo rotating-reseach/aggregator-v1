@@ -34,6 +34,12 @@ pub mod aggregator_v1 {
         instructions::aggregator::handle_map_extend_lookup_table(ctx, asset_type)
     }
 
+    pub fn initialize_user(
+        ctx: Context<InitializeUser>
+    ) -> Result<()> {
+        instructions::user::handle_initialize_user(ctx)
+    }
+
     // Drift Functions
     pub fn initialize_drift_vault<'info>(
         ctx: Context<'_, '_, '_, 'info, InitializeDriftVault<'info>>,

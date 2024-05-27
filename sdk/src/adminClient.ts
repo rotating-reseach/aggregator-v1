@@ -232,45 +232,10 @@ export class AdminAggregatorClient extends AggregatorClient {
       base_mint
     );
     const txSig = await this.provider.connection.sendTransaction(
-      await this.v0_pack(ix, [await this.getAggregatorProgramLUT()]),
+      await this.v0_pack(ix),
       this.opts
     );
     return txSig;
   }
-
-  async v0_pack(
-    instructions: TransactionInstruction[],
-    lookupTable?: PublicKey[] | AddressLookupTableAccount[],
-    signer?: Keypair
-  ) {
-    let lookupTableAccount: AddressLookupTableAccount[] = [];
-    if (lookupTable instanceof PublicKey) {
-      for (let i = 0; i < lookupTable.length; i++) {
-        const lut = (
-          await this.provider.connection.getAddressLookupTable(
-            lookupTable[i] as PublicKey
-          )
-        ).value;
-        lookupTableAccount.push(lut);
-      }
-    } else if (lookupTable instanceof AddressLookupTableAccount) {
-      lookupTableAccount = lookupTable as AddressLookupTableAccount[];
-    }
-
-    const blockhash = await this.provider.connection
-      .getLatestBlockhash()
-      .then((res) => res.blockhash);
-
-    const messageV0 = new TransactionMessage({
-      payerKey: this.wallet.publicKey,
-      recentBlockhash: blockhash,
-      instructions,
-    }).compileToV0Message(lookupTableAccount);
-
-    const transaction = new VersionedTransaction(messageV0);
-    transaction.sign([this.wallet.payer]);
-    if (signer) transaction.sign([signer]);
-
-    return transaction;
-  }
 }
+

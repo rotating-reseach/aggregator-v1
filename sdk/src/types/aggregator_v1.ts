@@ -329,6 +329,43 @@ export type AggregatorV1 = {
           }
         }
       ]
+    },
+    {
+      "name": "initializeUser",
+      "discriminator": [
+        111,
+        17,
+        185,
+        250,
+        60,
+        122,
+        38,
+        254
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -356,6 +393,19 @@ export type AggregatorV1 = {
         152,
         183,
         100
+      ]
+    },
+    {
+      "name": "user",
+      "discriminator": [
+        159,
+        117,
+        95,
+        227,
+        239,
+        151,
+        58,
+        236
       ]
     },
     {
@@ -441,6 +491,22 @@ export type AggregatorV1 = {
               "Address lookup table for the vaults."
             ],
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "user",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
