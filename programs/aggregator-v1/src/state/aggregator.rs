@@ -21,6 +21,13 @@ pub struct AggregatorMap {
     pub vault_lut: Pubkey,
 }
 
+/// This account is used to store the configuration of a vault.
+#[account(zero_copy)]
+pub struct Vault {
+    /// The type of the vault.
+    pub bump: u8,
+}
+
 #[repr(u8)]
 #[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq)]
 pub enum VaultAssetType {
@@ -34,4 +41,11 @@ impl Default for VaultAssetType {
     fn default() -> Self {
         Self::Deposit
     }
+}
+
+#[repr(u8)]
+#[derive(AnchorSerialize, AnchorDeserialize, Copy, Clone, PartialEq, Eq)]
+pub enum VaultType {
+    Spot,
+    Perp,
 }

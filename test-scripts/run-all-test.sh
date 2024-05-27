@@ -6,7 +6,8 @@ fi
 
 test_files=(
     aggregator/initialize-group.ts
-    aggregator/initialize-token.ts
+    aggregator/initialize-map.ts
+    drift/initialize-vault.ts
 )
 
 for test_file in ${test_files[@]}; do

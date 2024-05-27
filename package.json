@@ -5,11 +5,11 @@
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.30.0",
-    "@drift-labs/sdk": "^2.82.0-beta.19",
+    "@drift-labs/sdk": "^2.83.0-beta.1",
     "@solana-developers/helpers": "^2.3.0",
     "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.91.8",
-    "@tkkinn/mock-pyth-sdk": "^1.0.2",
+    "@tkkinn/mock-pyth-sdk": "^1.0.3",
     "@tkkinn/token-faucet-sdk": "^1.1.2"
   },
   "devDependencies": {

@@ -16,12 +16,15 @@ import {
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 
+const provider = anchor.AnchorProvider.env();
+const wallet = anchor.Wallet.local();
+const faucetClient = new FaucetClient({ wallet, provider });
+
 export async function v0_pack(
   instructions: TransactionInstruction[],
   signer?: Keypair,
   lookupTable?: AddressLookupTableAccount[]
 ): Promise<VersionedTransaction> {
-  const provider = anchor.AnchorProvider.env();
   const wallet = anchor.Wallet.local();
   const blockhash = await provider.connection
     .getLatestBlockhash()
@@ -43,17 +46,15 @@ export async function v0_pack(
 }
 
 export async function getLogs(signature: string): Promise<void> {
-  const connection = anchor.AnchorProvider.env().connection;
-
-  const block = await connection.getLatestBlockhash();
-  const rpcResponse = await connection.confirmTransaction(
+  const block = await provider.connection.getLatestBlockhash();
+  const rpcResponse = await provider.connection.confirmTransaction(
     {
       signature,
       ...block,
     },
     "confirmed"
   );
-  const txDetails = await connection.getTransaction(signature, {
+  const txDetails = await provider.connection.getTransaction(signature, {
     maxSupportedTransactionVersion: 0,
     commitment: "confirmed",
   });
@@ -93,37 +94,29 @@ export async function getLogs(signature: string): Promise<void> {
 }
 
 export async function createToken(
-  token_symbol: string,
-  token_decimals: number
+  tokenSymbol: string,
+  tokenDecimals: number
 ): Promise<string> {
-  const provider = anchor.AnchorProvider.env();
-  const wallet = anchor.Wallet.local();
-  const tokenClient = new FaucetClient({ wallet, provider });
-
-  const tx = await tokenClient.createToken(
-    token_symbol,
-    token_decimals,
-    token_symbol,
-    token_symbol
+  const tx = await faucetClient.createToken(
+    tokenSymbol,
+    tokenDecimals,
+    tokenSymbol,
+    tokenSymbol
   );
   return tx;
 }
 
 export async function mintToken(
-  token_symbol: string,
+  tokenSymbol: string,
   amount: number,
   target?: PublicKey
 ): Promise<string> {
-  const provider = anchor.AnchorProvider.env();
-  const wallet = anchor.Wallet.local();
-  const tokenClient = new FaucetClient({ wallet, provider });
-
   if (!target) {
-    const tx = await tokenClient.mintToken(token_symbol, amount);
+    const tx = await faucetClient.mintToken(tokenSymbol, amount);
     return tx;
   } else {
-    const mint_token = await tokenClient.buildMintTokenTx(token_symbol, amount);
-    const mintPDA = tokenClient.findTokenMintAddress(token_symbol);
+    const mint_token = await faucetClient.buildMintTokenTx(tokenSymbol, amount);
+    const mintPDA = faucetClient.findTokenMintAddress(tokenSymbol);
     const source_ata = getAssociatedTokenAddressSync(mintPDA, wallet.publicKey);
     const target_ata = getAssociatedTokenAddressSync(mintPDA, target);
     const transfer_spl = createTransferInstruction(

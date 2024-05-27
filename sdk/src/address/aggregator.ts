@@ -1,38 +1,71 @@
 import { PublicKey } from "@solana/web3.js";
-import { VaultAssetType } from "../type";
+import {
+  VaultAssetType,
+  VaultAssetTypeClass,
+  VaultAssetTypeEnum,
+} from "../type";
 
-export function getAggregatorGroupAddress(programId: PublicKey): PublicKey {
+export function getAggregatorGroupAddressNonce(
+  programId: PublicKey
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Buffer.from("aggregator_group")],
     programId
-  )[0];
+  );
 }
 
+export function getAggregatorGroupAddress(programId: PublicKey): PublicKey {
+  return getAggregatorGroupAddressNonce(programId)[0];
+}
+
+export function getAggregatorMapAddressNonce(
+  assetType: VaultAssetType,
+  tokenMint: PublicKey,
+  lendingProgram: PublicKey,
+  programId: PublicKey
+): [PublicKey, number] {
+  let assetTypeEnum: VaultAssetTypeEnum;
+
+  switch (assetType) {
+    case VaultAssetTypeClass.DEPOSIT:
+      assetTypeEnum = VaultAssetTypeEnum.DEPOSIT;
+      break;
+    case VaultAssetTypeClass.SPOT_BORROW:
+      assetTypeEnum = VaultAssetTypeEnum.SPOT_BORROW;
+      break;
+    case VaultAssetTypeClass.PERPETUAL_LONG:
+      assetTypeEnum = VaultAssetTypeEnum.PERPETUAL_LONG;
+      break;
+    case VaultAssetTypeClass.PERPETUAL_SHORT:
+      assetTypeEnum = VaultAssetTypeEnum.PERPETUAL_SHORT;
+      break;
+    default:
+      throw new Error("Invalid asset type");
+  }
+
+  return PublicKey.findProgramAddressSync(
+    [
+      tokenMint.toBuffer(),
+      lendingProgram.toBuffer(),
+      Buffer.from([assetTypeEnum]),
+    ],
+    programId
+  );
+}
 export function getAggregatorMapAddress(
   asset_type: VaultAssetType,
   token_mint: PublicKey,
   lending_program: PublicKey,
   programId: PublicKey
 ): PublicKey {
-  if (asset_type == VaultAssetType.DEPOSIT) {
-    return PublicKey.findProgramAddressSync(
-      [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([0])],
-      programId
-    )[0];
-  } else if (asset_type == VaultAssetType.SPOT_BORROW) {
-    return PublicKey.findProgramAddressSync(
-      [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([1])],
-      programId
-    )[0];
-  } else if (asset_type == VaultAssetType.PERPETIAL_LONG) {
-    return PublicKey.findProgramAddressSync(
-      [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([2])],
-      programId
-    )[0];
-  } else if (asset_type == VaultAssetType.PERPETIAL_SHORT) {
-    return PublicKey.findProgramAddressSync(
-      [token_mint.toBuffer(), lending_program.toBuffer(), Buffer.from([3])],
-      programId
-    )[0];
-  }
+  return getAggregatorMapAddressNonce(
+    asset_type,
+    token_mint,
+    lending_program,
+    programId
+  )[0];
 }
+
+export const AGGREGATOR_PROGRAM_LOOKUP_TABLE = new PublicKey(
+  "JDwdqVPbZ3VKPyVLN8FTE4LYJ2xbKUFMqF5XxjHTKzQL"
+);

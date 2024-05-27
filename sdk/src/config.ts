@@ -7,7 +7,6 @@ export type AggregatorClientConfig = {
   wallet: NodeWallet;
   provider: AnchorProvider;
   program?: Program<AggregatorV1>;
-  programId?: PublicKey;
   driftProgramId?: PublicKey;
   opts?: ConfirmOptions;
 };

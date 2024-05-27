@@ -14,6 +14,85 @@ export type AggregatorV1 = {
   },
   "instructions": [
     {
+      "name": "aggregatorMapExtendLookupTable",
+      "discriminator": [
+        67,
+        21,
+        246,
+        218,
+        190,
+        22,
+        81,
+        85
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "aggregatorGroup",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "aggregatorMap"
+        },
+        {
+          "name": "tokenMint"
+        },
+        {
+          "name": "addressLookupTable",
+          "writable": true
+        },
+        {
+          "name": "lendingProgram"
+        },
+        {
+          "name": "addressLookupTableProgram",
+          "address": "AddressLookupTab1e1111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "assetType",
+          "type": {
+            "defined": {
+              "name": "vaultAssetType"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "initializeAggregatorGroup",
       "discriminator": [
         22,
@@ -150,6 +229,106 @@ export type AggregatorV1 = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "initializeDriftVault",
+      "discriminator": [
+        97,
+        171,
+        186,
+        45,
+        25,
+        137,
+        59,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "aggregatorGroup",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "quoteAggregatorMap",
+          "writable": true
+        },
+        {
+          "name": "baseAggregatorMap",
+          "writable": true
+        },
+        {
+          "name": "quoteMint"
+        },
+        {
+          "name": "baseMint"
+        },
+        {
+          "name": "driftUserStats",
+          "writable": true
+        },
+        {
+          "name": "driftUser",
+          "writable": true
+        },
+        {
+          "name": "driftState",
+          "writable": true
+        },
+        {
+          "name": "driftProgram",
+          "address": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "baseAssetType",
+          "type": {
+            "defined": {
+              "name": "vaultAssetType"
+            }
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -178,6 +357,25 @@ export type AggregatorV1 = {
         183,
         100
       ]
+    },
+    {
+      "name": "vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "invalidLendingProgramId"
     }
   ],
   "types": [
@@ -243,6 +441,28 @@ export type AggregatorV1 = {
               "Address lookup table for the vaults."
             ],
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "vault",
+      "docs": [
+        "This account is used to store the configuration of a vault."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "The type of the vault."
+            ],
+            "type": "u8"
           }
         ]
       }

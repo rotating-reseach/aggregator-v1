@@ -8,6 +8,85 @@
   },
   "instructions": [
     {
+      "name": "aggregator_map_extend_lookup_table",
+      "discriminator": [
+        67,
+        21,
+        246,
+        218,
+        190,
+        22,
+        81,
+        85
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "aggregator_group",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "aggregator_map"
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "address_lookup_table",
+          "writable": true
+        },
+        {
+          "name": "lending_program"
+        },
+        {
+          "name": "address_lookup_table_program",
+          "address": "AddressLookupTab1e1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "asset_type",
+          "type": {
+            "defined": {
+              "name": "VaultAssetType"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "initialize_aggregator_group",
       "discriminator": [
         22,
@@ -144,6 +223,106 @@
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "initialize_drift_vault",
+      "discriminator": [
+        97,
+        171,
+        186,
+        45,
+        25,
+        137,
+        59,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "aggregator_group",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  103,
+                  114,
+                  101,
+                  103,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  103,
+                  114,
+                  111,
+                  117,
+                  112
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "quote_aggregator_map",
+          "writable": true
+        },
+        {
+          "name": "base_aggregator_map",
+          "writable": true
+        },
+        {
+          "name": "quote_mint"
+        },
+        {
+          "name": "base_mint"
+        },
+        {
+          "name": "drift_user_stats",
+          "writable": true
+        },
+        {
+          "name": "drift_user",
+          "writable": true
+        },
+        {
+          "name": "drift_state",
+          "writable": true
+        },
+        {
+          "name": "drift_program",
+          "address": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "base_asset_type",
+          "type": {
+            "defined": {
+              "name": "VaultAssetType"
+            }
+          }
+        }
+      ]
     }
   ],
   "accounts": [
@@ -172,6 +351,25 @@
         183,
         100
       ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidLendingProgramId"
     }
   ],
   "types": [
@@ -237,6 +435,28 @@
               "Address lookup table for the vaults."
             ],
             "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "docs": [
+        "This account is used to store the configuration of a vault."
+      ],
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "docs": [
+              "The type of the vault."
+            ],
+            "type": "u8"
           }
         ]
       }

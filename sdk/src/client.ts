@@ -1,17 +1,26 @@
 import { AnchorProvider, Program } from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 import { AggregatorV1 } from "./types/aggregator_v1";
-import { ConfirmOptions, PublicKey } from "@solana/web3.js";
+import {
+  AddressLookupTableAccount,
+  ConfirmOptions,
+  PublicKey,
+} from "@solana/web3.js";
 import { AggregatorClientConfig } from "./config";
 import idl from "./idl/aggregator_v1.json";
 import { VaultAssetType } from "./type";
-import { getAggregatorMapAddress } from "./address/aggregator";
+import {
+  AGGREGATOR_PROGRAM_LOOKUP_TABLE,
+  getAggregatorMapAddress,
+} from "./address/aggregator";
 
 export class AggregatorClient {
   provider: AnchorProvider;
   wallet: NodeWallet;
-  public program: Program<AggregatorV1>;
-  driftProgramId?: PublicKey;
+  public program?: Program<AggregatorV1>;
+  driftProgramId?: PublicKey = new PublicKey(
+    "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+  );
   opts?: ConfirmOptions;
 
   public constructor(config: AggregatorClientConfig) {
@@ -27,7 +36,7 @@ export class AggregatorClient {
     this.opts = config.opts;
   }
 
-  async getVaultLookupTableAddress(
+  async getVaultLookupTablePublicKey(
     asset_type: VaultAssetType,
     token_mint: PublicKey,
     lending_program: PublicKey
@@ -42,5 +51,30 @@ export class AggregatorClient {
         )
       )
     ).vaultLut;
+  }
+
+  async getVaultLookupTable(
+    asset_type: VaultAssetType,
+    token_mint: PublicKey,
+    lending_program: PublicKey
+  ): Promise<AddressLookupTableAccount> {
+    const lut_pk = await this.getVaultLookupTablePublicKey(
+      asset_type,
+      token_mint,
+      lending_program
+    );
+    const vaultLut = (
+      await this.provider.connection.getAddressLookupTable(lut_pk)
+    ).value;
+
+    return vaultLut;
+  }
+
+  async getAggregatorProgramLUT(): Promise<AddressLookupTableAccount> {
+    return (
+      await this.provider.connection.getAddressLookupTable(
+        AGGREGATOR_PROGRAM_LOOKUP_TABLE
+      )
+    ).value;
   }
 }

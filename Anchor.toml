@@ -36,3 +36,15 @@ program = "./validator/program/token-faucet.so"
 [[test.genesis]]
 address = "FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH"
 program = "./validator/program/mock-pyth.so"
+
+[[test.validator.account]]
+address = "Gnt27xtC473ZT2Mw5u8wZ68Z3gULkSTb5DuxJy7eJotD"
+filename = "./validator/account/USDC-PYTH.json"
+
+[[test.validator.account]]
+address = "H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG"
+filename = "./validator/account/SOL-PYTH.json"
+
+[[test.validator.account]]
+address = "JDwdqVPbZ3VKPyVLN8FTE4LYJ2xbKUFMqF5XxjHTKzQL"
+filename = "./validator/account/program-lut.json"
