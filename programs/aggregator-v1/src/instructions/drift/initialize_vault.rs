@@ -1,12 +1,13 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
-use drift::program::Drift;
+use drift::{cpi::accounts::{InitializeUser, InitializeUserStats}, program::Drift};
+use solana_program::program_pack::Sealed;
 
-use crate::{AggregatorGroup, AggregatorMap, Vault, VaultAssetType, VaultType};
+use crate::{cpi::DriftInitializeUserCPI, AggregatorGroup, AggregatorMap, Vault, VaultAssetType, VaultType};
 
 pub fn handle_initialize_drift_vault<'info>(
     ctx: Context<'_, '_, '_, 'info, InitializeDriftVault<'info>>,
-    _base_asset_type: VaultAssetType,
+    base_asset_type: VaultAssetType,
 ) -> Result<()> {
     let mut quote_aggregator_map = ctx.accounts.quote_aggregator_map.load_mut()?;
     quote_aggregator_map.vault_num += 1;
@@ -19,6 +20,9 @@ pub fn handle_initialize_drift_vault<'info>(
     let mut vault = ctx.accounts.vault.load_init()?;
     vault.bump = ctx.bumps.vault;
     drop(vault);
+
+    ctx.drift_initialize_user_stats(base_asset_type)?;
+    ctx.drift_initialize_user(base_asset_type)?;
 
     Ok(())
 }
@@ -77,4 +81,65 @@ pub struct InitializeDriftVault<'info> {
     pub drift_program: Program<'info, Drift>,
     pub rent: Sysvar<'info, Rent>,
     pub system_program: Program<'info, System>,
+}
+
+impl<'info> DriftInitializeUserCPI for Context<'_, '_, '_, 'info, InitializeDriftVault<'info>> {
+    fn drift_initialize_user(&self, base_asset_type: VaultAssetType) -> Result<()> {
+        let name: [u8; 32] = [0; 32];
+        let quote_mint_pk = self.accounts.quote_mint.key();
+        let base_mint_pk = self.accounts.base_mint.key();
+        let drift_program_pk = self.accounts.drift_program.key();
+        let seeds = &[
+            quote_mint_pk.as_ref(),
+            base_mint_pk.as_ref(),
+            drift_program_pk.as_ref(),
+            &[if base_asset_type == VaultAssetType::SpotBorrow { VaultType::Spot } else { VaultType::Perp } as u8],
+            &[self.bumps.vault]
+        ];
+        let signers = &[&seeds[..]];
+
+        let cpi_program = self.accounts.drift_program.to_account_info().clone();
+        let cpi_accounts = InitializeUser {
+            user_stats: self.accounts.drift_user_stats.clone(),
+            user: self.accounts.drift_user.clone(),
+            state: self.accounts.drift_state.clone(),
+            authority: self.accounts.vault.to_account_info().clone(),
+            payer: self.accounts.authority.to_account_info().clone(),
+            rent: self.accounts.rent.to_account_info().clone(),
+            system_program: self.accounts.system_program.to_account_info().clone(),
+        };
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signers);
+        let sub_account_id = 0_u16;
+        drift::cpi::initialize_user(cpi_ctx, sub_account_id, name)?;
+
+        Ok(())
+    }
+
+    fn drift_initialize_user_stats(&self, base_asset_type: VaultAssetType) -> Result<()> {
+        let quote_mint_pk = self.accounts.quote_mint.key();
+        let base_mint_pk = self.accounts.base_mint.key();
+        let drift_program_pk = self.accounts.drift_program.key();
+        let seeds = &[
+            quote_mint_pk.as_ref(),
+            base_mint_pk.as_ref(),
+            drift_program_pk.as_ref(),
+            &[if base_asset_type == VaultAssetType::SpotBorrow { VaultType::Spot } else { VaultType::Perp } as u8],
+            &[self.bumps.vault]
+        ];
+        let signers = &[&seeds[..]];
+
+        let cpi_program = self.accounts.drift_program.to_account_info().clone();
+        let cpi_accounts = InitializeUserStats {
+            user_stats: self.accounts.drift_user_stats.clone(),
+            state: self.accounts.drift_state.clone(),
+            authority: self.accounts.vault.to_account_info().clone(),
+            payer: self.accounts.authority.to_account_info().clone(),
+            rent: self.accounts.rent.to_account_info().clone(),
+            system_program: self.accounts.system_program.to_account_info().clone(),
+        };
+        let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signers);
+        drift::cpi::initialize_user_stats(cpi_ctx)?;
+
+        Ok(())
+    }
 }

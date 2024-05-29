@@ -16,3 +16,8 @@ pub trait ExtendLookupTableCPI {
 }
 
 // Drift CPI instruction
+pub trait DriftInitializeUserCPI {
+    fn drift_initialize_user(&self, base_asset_type: VaultAssetType) -> Result<()>;
+
+    fn drift_initialize_user_stats(&self, base_asset_type: VaultAssetType) -> Result<()>;
+}
