@@ -9,16 +9,19 @@ crate-type = ["cdylib", "lib"]
 name = "aggregator_v1"
 
 [features]
-default = []
+default = ["mainnet-beta"]
 cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
 idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+mainnet-beta = []
+devnet = []
 
 [dependencies]
 anchor-lang = "0.30.0"
 anchor-spl = "0.30.0"
 bytemuck = { version = "1.4.0", features = ["derive", "min_const_generics"]}
 drift = { version = "2.81.0", path = "../drift", features = ["cpi"] }
+fixed = "1.27.0"
 solana-program = "1.18.14"

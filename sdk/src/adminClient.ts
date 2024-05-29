@@ -10,9 +10,7 @@ import {
 import { AggregatorClient } from "./client";
 import { VaultAssetType, VaultAssetTypeClass } from "./type";
 import { BN } from "@coral-xyz/anchor";
-import {
-  getAggregatorMapAddress,
-} from "./address/aggregator";
+import { getAggregatorMapAddress } from "./address/aggregator";
 import {
   createAssociatedTokenAccountInstruction,
   getAssociatedTokenAddressSync,
@@ -161,8 +159,8 @@ export class AdminAggregatorClient extends AggregatorClient {
       baseMint
     );
 
-    const extendQuoteMapLookupTableIx = await this.program.methods
-      .aggregatorMapExtendLookupTable(VaultAssetTypeClass.DEPOSIT)
+    const extendQuoteMapIx = await this.program.methods
+      .aggregatorMapExtend(VaultAssetTypeClass.DEPOSIT)
       .accounts({
         authority: this.wallet.publicKey,
         aggregatorMap: getAggregatorMapAddress(
@@ -186,8 +184,8 @@ export class AdminAggregatorClient extends AggregatorClient {
       ])
       .instruction();
 
-    const extendBaseMapLookupTableIx = await this.program.methods
-      .aggregatorMapExtendLookupTable(baseAssetType)
+    const extendBaseMapIx = await this.program.methods
+      .aggregatorMapExtend(baseAssetType)
       .accounts({
         authority: this.wallet.publicKey,
         aggregatorMap: getAggregatorMapAddress(
@@ -215,8 +213,8 @@ export class AdminAggregatorClient extends AggregatorClient {
       initDriftVaultIx,
       createVaultQuoteATAIx,
       createVaultBaseATAIx,
-      extendQuoteMapLookupTableIx,
-      extendBaseMapLookupTableIx
+      extendQuoteMapIx,
+      extendBaseMapIx
     );
     return ix;
   }
@@ -238,4 +236,3 @@ export class AdminAggregatorClient extends AggregatorClient {
     return txSig;
   }
 }
-

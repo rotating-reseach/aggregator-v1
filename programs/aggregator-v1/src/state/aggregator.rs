@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::WrappedI80F48;
+
 /// This account is used to store the global configuration of the aggregator.
 #[account(zero_copy)]
 pub struct AggregatorGroup {
@@ -19,6 +21,8 @@ pub struct AggregatorMap {
     pub bump: u8,
     /// Address lookup table for the vaults.
     pub vault_lut: Pubkey,
+    /// The number of share for this assets
+    pub share: WrappedI80F48,
 }
 
 /// This account is used to store the configuration of a vault.

@@ -1,10 +1,11 @@
 use anchor_lang::prelude::*;
 
-use crate::User;
+use crate::{Balance, User};
 
 pub fn handle_initialize_user(ctx: Context<InitializeUser>) -> Result<()> {
     let mut user = ctx.accounts.user.load_init()?;
     user.bump = ctx.bumps.user;
+    user.balance = [Balance::default(); 16];
     drop(user);
     Ok(())
 }
@@ -23,5 +24,5 @@ pub struct InitializeUser<'info> {
     )]
     pub user: AccountLoader<'info, User>,
 
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }

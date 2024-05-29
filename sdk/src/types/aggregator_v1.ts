@@ -14,16 +14,16 @@ export type AggregatorV1 = {
   },
   "instructions": [
     {
-      "name": "aggregatorMapExtendLookupTable",
+      "name": "aggregatorMapExtend",
       "discriminator": [
-        67,
-        21,
-        246,
-        218,
-        190,
-        22,
-        81,
-        85
+        227,
+        104,
+        17,
+        3,
+        191,
+        3,
+        153,
+        32
       ],
       "accounts": [
         {
@@ -209,6 +209,14 @@ export type AggregatorV1 = {
         {
           "name": "addressLookupTableProgram",
           "address": "AddressLookupTab1e1111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "systemProgram",
@@ -491,6 +499,41 @@ export type AggregatorV1 = {
               "Address lookup table for the vaults."
             ],
             "type": "pubkey"
+          },
+          {
+            "name": "share",
+            "docs": [
+              "The number of share for this assets"
+            ],
+            "type": {
+              "defined": {
+                "name": "wrappedI80f48"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "balance",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "wrappedI80f48"
+              }
+            }
           }
         ]
       }
@@ -504,6 +547,19 @@ export type AggregatorV1 = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "balance",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "balance"
+                  }
+                },
+                16
+              ]
+            }
+          },
           {
             "name": "bump",
             "type": "u8"
@@ -552,6 +608,27 @@ export type AggregatorV1 = {
           },
           {
             "name": "perpShort"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wrappedI80f48",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
           }
         ]
       }

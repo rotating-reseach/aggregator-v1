@@ -8,16 +8,16 @@
   },
   "instructions": [
     {
-      "name": "aggregator_map_extend_lookup_table",
+      "name": "aggregator_map_extend",
       "discriminator": [
-        67,
-        21,
-        246,
-        218,
-        190,
-        22,
-        81,
-        85
+        227,
+        104,
+        17,
+        3,
+        191,
+        3,
+        153,
+        32
       ],
       "accounts": [
         {
@@ -203,6 +203,14 @@
         {
           "name": "address_lookup_table_program",
           "address": "AddressLookupTab1e1111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "system_program",
@@ -485,6 +493,41 @@
               "Address lookup table for the vaults."
             ],
             "type": "pubkey"
+          },
+          {
+            "name": "share",
+            "docs": [
+              "The number of share for this assets"
+            ],
+            "type": {
+              "defined": {
+                "name": "WrappedI80F48"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Balance",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "map",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "WrappedI80F48"
+              }
+            }
           }
         ]
       }
@@ -498,6 +541,19 @@
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "balance",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "Balance"
+                  }
+                },
+                16
+              ]
+            }
+          },
           {
             "name": "bump",
             "type": "u8"
@@ -546,6 +602,27 @@
           },
           {
             "name": "PerpShort"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WrappedI80F48",
+      "serialization": "bytemuck",
+      "repr": {
+        "kind": "c"
+      },
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
           }
         ]
       }

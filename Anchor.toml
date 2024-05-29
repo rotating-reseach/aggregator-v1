@@ -44,7 +44,3 @@ filename = "./validator/account/USDC-PYTH.json"
 [[test.validator.account]]
 address = "H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG"
 filename = "./validator/account/SOL-PYTH.json"
-
-[[test.validator.account]]
-address = "JDwdqVPbZ3VKPyVLN8FTE4LYJ2xbKUFMqF5XxjHTKzQL"
-filename = "./validator/account/program-lut.json"

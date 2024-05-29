@@ -4,11 +4,11 @@ use anchor_lang::prelude::*;
 
 declare_id!("BPanLhvKwatyLQwSWTbUc3R3VVwsrQWrEeTtzD2DA6TZ");
 
+mod constants;
 mod cpi;
 mod error;
 mod instructions;
 mod state;
-mod validation;
 
 #[program]
 pub mod aggregator_v1 {
@@ -27,16 +27,14 @@ pub mod aggregator_v1 {
         instructions::aggregator::handle_initialize_aggregator_map(ctx, _token_type, recent_slot)
     }
 
-    pub fn aggregator_map_extend_lookup_table<'info>(
-        ctx: Context<'_, '_, '_, 'info, MapExtendLookupTable<'info>>,
+    pub fn aggregator_map_extend<'info>(
+        ctx: Context<'_, '_, '_, 'info, ExtendMap<'info>>,
         asset_type: VaultAssetType,
     ) -> Result<()> {
-        instructions::aggregator::handle_map_extend_lookup_table(ctx, asset_type)
+        instructions::aggregator::handle_extend_map(ctx, asset_type)
     }
 
-    pub fn initialize_user(
-        ctx: Context<InitializeUser>
-    ) -> Result<()> {
+    pub fn initialize_user(ctx: Context<InitializeUser>) -> Result<()> {
         instructions::user::handle_initialize_user(ctx)
     }
 

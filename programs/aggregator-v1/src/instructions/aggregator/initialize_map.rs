@@ -1,11 +1,14 @@
 use crate::{
     cpi::{CreateLookupTableCPI, ExtendLookupTableCPI},
-    state::{AggregatorGroup, AggregatorMap, VaultAssetType},
-    validation::check_lending_program,
-    AddressLookupTable,
+    state::{check_lending_program, AggregatorGroup, AggregatorMap, VaultAssetType},
+    AddressLookupTable, WrappedI80F48,
 };
 use anchor_lang::prelude::*;
-use anchor_spl::token::Mint;
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token::{Mint, Token},
+};
+use fixed::types::I80F48;
 use solana_program::address_lookup_table::instruction::{
     create_lookup_table_signed, extend_lookup_table,
 };
@@ -19,6 +22,7 @@ pub fn handle_initialize_aggregator_map<'info>(
     aggregator_map.vault_num = 0;
     aggregator_map.bump = ctx.bumps.aggregator_map;
     aggregator_map.vault_lut = *ctx.accounts.vault_lut.key;
+    aggregator_map.share = WrappedI80F48::from(I80F48::from_num(0));
     drop(aggregator_map);
 
     ctx.create_lookup_table(asset_type, recent_slot)?;
@@ -26,6 +30,9 @@ pub fn handle_initialize_aggregator_map<'info>(
         ctx.accounts.aggregator_map.key(),
         ctx.accounts.token_mint.key(),
         ctx.accounts.lending_program.key(),
+        ctx.accounts.system_program.key(),
+        ctx.accounts.token_program.key(),
+        ctx.accounts.associated_token_program.key(),
     ];
     ctx.extend_lookup_table(asset_type, new_address)?;
 
@@ -69,6 +76,8 @@ pub struct InitializeAggregatorMap<'info> {
     /// CHECK: This program won't execute in this instuction, only used to derive the PDA
     pub lending_program: AccountInfo<'info>,
     pub address_lookup_table_program: Program<'info, AddressLookupTable>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
 }
 

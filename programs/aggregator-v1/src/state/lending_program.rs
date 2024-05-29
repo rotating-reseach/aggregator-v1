@@ -1,7 +1,11 @@
 use anchor_lang::{require, Result};
 use solana_program::pubkey::Pubkey;
 
-use crate::error::ErrorCode;
+use crate::{constants::DRIFT_ID, error::ErrorCode};
+
+pub enum LendingProgram {
+    Drift,
+}
 
 pub fn check_lending_program(program_id: Pubkey) -> Result<bool> {
     let lending_program_pk: [Pubkey; 1] = [drift::id()];
@@ -14,4 +18,13 @@ pub fn check_lending_program(program_id: Pubkey) -> Result<bool> {
     );
 
     Ok(true)
+}
+
+pub fn match_lending_program(program_id: Pubkey) -> Result<LendingProgram> {
+    let lending_program = match program_id {
+        DRIFT_ID => LendingProgram::Drift,
+        _ => return Err(ErrorCode::InvalidLendingProgramId.into()),
+    };
+
+    Ok(lending_program)
 }

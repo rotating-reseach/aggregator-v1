@@ -83,22 +83,27 @@ export class AggregatorClient {
   }
 
   async getInitializeUserIx(): Promise<TransactionInstruction> {
-    return (await this.program.methods.initializeUser().accounts({
-      authority: this.wallet.publicKey,
-    }).instruction())
+    return await this.program.methods
+      .initializeUser()
+      .accounts({
+        authority: this.wallet.publicKey,
+      })
+      .instruction();
   }
 
   async initializeUser(): Promise<string> {
     const ix = await this.getInitializeUserIx();
-    const tx = await this.provider.connection.sendTransaction(await this.v0_pack([ix]), this.opts);
+    const tx = await this.provider.connection.sendTransaction(
+      await this.v0_pack([ix]),
+      this.opts
+    );
     return tx;
   }
 
   async v0_pack(
     instructions: TransactionInstruction[],
-    programLookupTable?: boolean,
     lookupTable?: PublicKey[] | AddressLookupTableAccount[],
-    signer?: Keypair,
+    signer?: Keypair
   ) {
     let lookupTableAccount: AddressLookupTableAccount[] = [];
     if (lookupTable instanceof PublicKey) {
@@ -112,10 +117,6 @@ export class AggregatorClient {
       }
     } else if (lookupTable instanceof AddressLookupTableAccount) {
       lookupTableAccount = lookupTable as AddressLookupTableAccount[];
-    }
-
-    if (programLookupTable) {
-      lookupTableAccount.push(await this.getAggregatorProgramLUT());
     }
 
     const blockhash = await this.provider.connection
@@ -135,4 +136,3 @@ export class AggregatorClient {
     return transaction;
   }
 }
-
